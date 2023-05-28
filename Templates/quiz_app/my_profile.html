@@ -1,0 +1,101 @@
+{% extends './base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'quiz_app/css/profile.css' %}">
+{% endblock %}
+{% block content %}
+
+
+<div style="margin-bottom: 50px;">
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="page-content page-container" id="page-content">
+    <div class="m-3">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-6 col-md-12">
+                <div class="card user-card-full">
+                    <div class="row m-l-0 m-r-0">
+                        <div class="col-sm-4 bg-c-lite-green user-profile">
+                            <div class="card-block text-center text-white">
+                                <div class="m-b-25"> <img src="https://img.icons8.com/bubbles/100/000000/user.png"
+                                        class="img-radius" alt="User-Profile-Image"> </div>
+                                <h2 class="f-w-600">{{user_inst.username | capfirst}}</h2>
+                                <p class="font-weight-bold">{{user_inst.email}}</p> <i
+                                    class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card-block">
+                                <h2 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h2>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Email</p>
+                                        <h6 class="text-muted f-w-400">{{user_inst.email}}</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Phone</p>
+                                        <h6 class="text-muted f-w-400">{{user_inst.phone_no}}</h6>
+                                    </div>
+                                </div>
+                                <h2 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Other Info</h2>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Full Name</p>
+                                        <h6 class="text-muted f-w-400">{{user_inst.get_full_name}}</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Last Login</p>
+                                        <h6 class="text-muted f-w-400">{{user_inst.last_login}}</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Join Date</p>
+                                        <h6 class="text-muted f-w-400">{{user_inst.date_joined}}</h6>
+                                    </div>
+                                </div>
+                                <br/>
+                                    <a class="btn btn-success text-light my-3" href="#profile_form" onclick="myProfile()">Edit Profile</a>
+                                    <a class="btn btn-danger" href="{% url 'logout_user' %}">Logout</a><br/>
+                                    {% if user.pre_complete %}
+                                        <a href="{% url 'all_done' 'pre' %}" class="btn btn-info my-2">View Pre Quiz Score</a>
+                                    {% endif %}
+                                    {% if user.post_complete %}
+                                        <a href="{% url 'all_done' 'post' %}" class="btn btn-warning my-2">View Post Quiz Score</a>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<center>
+    <form action="" method="POST" id="profile_form"  style="display: none;">
+        <h4>Edit My Profile</h4><hr/>
+        {% csrf_token %}
+        {{fm.as_p}}
+        <input type="submit" class="btn btn-success" value="Submit">
+    </form>
+    <br/>
+    <br/>
+    <br/>
+</center>
+
+<script>
+    const myProfile = () => {
+        $("#profile_form").show();
+    };
+</script>
+
+{% endblock %}

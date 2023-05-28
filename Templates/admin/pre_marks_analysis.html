@@ -1,0 +1,145 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+
+{% block extrastyle %}
+{{ block.super }}
+
+{% for css in dashboard.media.css %}
+<link href="{% static css %}" rel="stylesheet" />
+{% endfor %}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+
+{% for js in dashboard.media.js %}
+<script src="{% static js %}"></script>
+{% endfor %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard jet{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="breadcrumbs">Marks Analysis</div>
+{% endif %}
+<div>
+    <center><h3>Pre Quiz Analysis</h3></center><hr/>
+<h3 id = "cat_header"></h3>
+<hr/>
+<h3 id = "main_cat" style="margin-left: 20px;">Category Name : <b><span id = "target_name"></span></b></h3>
+
+<center>
+<div class="loader">
+    <img src="{% static 'quiz_app/images/base/loader.gif' %}" width="300px" height="300px" />
+</div>
+</center>
+
+<h5 style="margin-left: 20px;">
+    <li style="padding: 6px;">Accuracy of Logistic regression classifier on training set: <b><span id = "logi_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of Logistic regression classifier on test set: <b><span id = "logi_test"></span></b></li>
+    <li style="padding: 6px;">Accuracy of Decision Tree classifier on training set: <b><span id = "dec_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of Decision Tree classifier on test set: <b><span id = "dec_test"></span></b></li>
+    <li style="padding: 6px;">Accuracy of K-NN classifier on training set: <b><span id = "knn_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of K-NN classifier on test set: <b><span id = "knn_test"></span></b></li>
+
+    <li style="padding: 6px;">Accuracy of LDA classifier on training set: <b><span id = "lda_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of LDA classifier on test set: <b><span id = "lda_test"></span></b></li>
+    <li style="padding: 6px;">Accuracy of GNB classifier on training set: <b><span id = "gnb_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of GNB classifier on test set: <b><span id = "gnb_test"></span></b></li>
+    <li style="padding: 6px;">Accuracy of SVM classifier on training set: <b><span id = "svm_tr"></span></b></li>
+    <li style="padding: 6px;">Accuracy of SVM classifier on test set: <b><span id = "svm_test"></span></b></li>
+</h5>
+
+<center>
+<div class="loader">
+    <img src="{% static 'quiz_app/images/base/loader.gif' %}" width="300px" height="300px" />
+</div>
+</center>
+
+<div id="render__graph" class="row" style="margin: 8px;"></div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "POST",
+                url: `/render_an_graph/pre_quiz/No/`,
+                data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                dataType: "json",
+                success: function (response) {
+                    $("#target_name").text(response.target_name)
+                    $("#logi_tr").text(response.logi_tr)
+                    $("#logi_test").text(response.logi_test)
+                    $("#dec_tr").text(response.dec_tr)
+                    $("#dec_test").text(response.dec_test)
+                    $("#knn_tr").text(response.knn_tr)
+                    $("#knn_test").text(response.knn_test)
+                    $("#lda_tr").text(response.lda_tr)
+                    $("#lda_test").text(response.lda_test)
+                    $("#gnb_tr").text(response.gnb_tr)
+                    $("#gnb_test").text(response.gnb_test)
+                    $("#svm_tr").text(response.svm_tr)
+                    $("#svm_test").text(response.svm_test)
+                    let img_app = `<div class = "col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.bar_chart}"></div><div class = "col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.histo_chart}"></div><hr/><div class="row"><div class="col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.scat_chart}"></div><div class="col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.box_chart}"></div></div>`
+                    document.getElementById("render__graph").innerHTML = img_app
+                    for (let i = 0; i < response.category.length; i++) {
+                        let cat_hd = `<a id = "${response.category[i]}" class = "cat btn btn-lg">${response.category[i]}</a>`
+                        document.getElementById('cat_header').innerHTML += cat_hd
+                    };
+                    $('.cat').click(function (e) {
+                        $('.loader').show()
+                        let cat__name = e.target.id
+                        $.ajax({
+                            type: "POST",
+                            url: `/render_an_graph/pre_quiz/${cat__name}/`,
+                            data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                            dataType: "json",
+                            success: function (response) {
+                                $("#target_name").text(response.target_name)
+                                $("#logi_tr").text(response.logi_tr)
+                                $("#logi_test").text(response.logi_test)
+                                $("#dec_tr").text(response.dec_tr)
+                                $("#dec_test").text(response.dec_test)
+                                $("#knn_tr").text(response.knn_tr)
+                                $("#knn_test").text(response.knn_test)
+                                $("#lda_tr").text(response.lda_tr)
+                                $("#lda_test").text(response.lda_test)
+                                $("#gnb_tr").text(response.gnb_tr)
+                                $("#gnb_test").text(response.gnb_test)
+                                $("#svm_tr").text(response.svm_tr)
+                                $("#svm_test").text(response.svm_test)
+                                let sel_app = `<div class = "col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.bar_chart}"></div><div class = "col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.histo_chart}"></div><hr/><div class="row"><div class="col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.scat_chart}"></div><div class="col-sm-6"><img style="width:100%; max-width:600px" src="data:image/png;base64,${response.box_chart}"></div></div>`
+                                document.getElementById("render__graph").innerHTML = sel_app
+                                $('.loader').hide()
+                            },
+                            error: function (rs, e) {
+                                alert("Something went wrong!!!")
+                                $('.loader').hide()
+                            }
+                        });
+                    });
+                    $('.loader').hide();
+                },
+                error: function (rs, e) {
+                    alert("Something went wrong!!!")
+                    $('.loader').hide()
+                }
+            });
+        });
+
+</script>
+
+{{ dashboard.render_tools }}
+{% endblock %}
+
+{% block content %}
+{{ dashboard.render }}
+{% endblock %}

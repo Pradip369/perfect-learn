@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZ START</title>
+
+    {% load static %}
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{% static 'quiz_app/css/start_quiz.css' %}" />
+
+</head>
+
+
+<body oncontextmenu="return false">
+
+    <img src="{% static 'quiz_app/images/base/logo.png' %}" width="150px" height="20px" alt="image">
+    <br />
+    <br />
+
+    {% if messages %}
+    <div id = "all_msg_alrt">
+    {% for message in messages %}
+        <center><strong class="m-5 alert alert-danger border-dark">{{message}}</strong></center>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    {% include './quiz_rule.html' with categorys=all_category first_id=first_id type="Post" %}
+
+
+    <div class="row">
+        <div class="col-sm-3">
+            <form action="{% url 'all_done' 'post' %}" method="POST" id="auto_submit" class="sub_mit" style="margin-left: 10px;">
+                {% csrf_token %}
+                <input type="submit" value="Final Submit" style="display: none; padding: 10px 20px 10px 20px;"
+                    class="all_done show_done btn btn-block btn-success">
+            </form>
+
+            <h4 style="display: none; margin-left: 10px; color: black;" class="alert-danger alert border-dark" id="show_timer">
+                <span class="glyphicon glyphicon-tasks"></span> <span id="see_category" class="p-3 bg-dark"></span><br />
+                <hr /><span class="glyphicon glyphicon-time"></span> <strong>Remaining Time</strong> : <b><span id="timer"
+                        class="badge badge-danger">{{pre_time}}</span></b> Minutes
+            </h4>
+
+            <div style="display: none;" id="page_indicator">
+                <div style="margin-left: 10px;">
+                    <h4 class="alert alert-info">Jump To : <br /><br />
+                        <div style="margin-left: 10px;">
+                            {% for q in que %}
+                            <div class="pagination">
+                                <a id="{{q.id}}"
+                                    class="page_select btn btn-sm {{forloop.counter}}">{{forloop.counter}}</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div style="display: none;" class="container-fluid bg-info" id='question__see'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><span class="label label-warning" id="qid"></span><span id="my_question"></span></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="quiz" id="quiz" data-toggle="buttons">
+                                <label class="element-animation1 btn btn-lg btn-primary btn-block"><span
+                                        class="btn-label"><i style="pointer-events: none;" class="glyphicon glyphicon-chevron-right"></i></span>
+                                    <input type="radio" class="_op1_ rb"><span style="pointer-events: none;" id="op1"></span></label>
+                                <label class="element-animation2 btn btn-lg btn-primary btn-block"><span
+                                        class="btn-label"><i style="pointer-events: none;" class="glyphicon glyphicon-chevron-right"></i></span>
+                                    <input type="radio" class="_op2_ rb"><span style="pointer-events: none;" id="op2"></span></label>
+                                <label id="_op3" class="element-animation3 btn btn-lg btn-primary btn-block"><span
+                                        class="btn-label"><i style="pointer-events: none;" class="glyphicon glyphicon-chevron-right"></i></span>
+                                    <input type="radio" class="_op3_ rb"><span style="pointer-events: none;" id="op3"></span></label>
+                                <label id="_op4" class="element-animation4 btn btn-lg btn-primary btn-block"><span
+                                        class="btn-label"><i style="pointer-events: none;" class="glyphicon glyphicon-chevron-right"></i></span>
+                                    <input type="radio" class="_op4_ rb"><span style="pointer-events: none;" id="op4"></span></label>
+                            </div>
+                            <div id="attemped" class="alert alert-info border-dark" style="display: none;">You have
+                                already
+                                attempted this question!!</div>
+                        </div>
+
+                        <center><img id="_loader" width="220px" height="200px" style="display: none;"
+                                src='{% static "quiz_app/images/base/loader.gif" %}' /></center>
+
+                        <center>
+                            <a class="btn btn-success disabled text-light" style="padding : 10px 20px 10px 20px;"
+                                id="b12">
+                                Submit </a>
+                            <a style="padding: 10px 20px 10px 20px;" class="next_btn btn btn-sm btn-primary"
+                                onclick="go_next()">Next ➡</a>
+                            <form action="{% url 'all_done' 'post' %}" method="POST" id="auto_submit" class="sub_mit">
+                                {% csrf_token %}
+                                <input type="submit" value="Final Submit"
+                                    style="display: none; padding: 10px 20px 10px 20px;"
+                                    class="all_done btn btn-sm btn-success px-4 m-3">
+                            </form>
+                        </center>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span id="userans" hidden></span>
+
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+        <script>
+
+            var start_timer = () => {
+                var time_limit = "{{pre_time}}"
+                var count = parseInt(time_limit);
+                var interval = setInterval(function () {
+                    document.getElementById('timer').innerHTML = count - 1;
+                    count--;
+                    if (count === 0) {
+                        clearInterval(interval);
+                        $('#auto_submit').submit();
+                        document.getElementById('timer').innerHTML = 'Done';
+                    }
+                }, 60000);
+            };
+        </script>
+        <script>
+            $(function () {
+                $("label.btn").on('click', function (e) {
+                    var choice = $(this).find('input:radio').val();
+                    document.getElementById('userans').innerText = choice
+                    document.getElementById('b12').classList.remove('disabled')
+                    $('label').removeClass("btn-warning")
+                    $(e.target).addClass("btn-warning")
+                });
+
+            });
+            $(function () {
+                $(".sub_mit").on('submit', function (e) {
+                    window.onbeforeunload = null;
+                });
+
+            });
+
+            const go_next = () => {
+                let id = event.srcElement.id
+                let total_page = "{{question_count}}"
+                if (total_page <= id) {
+                    $(".next_btn").hide()
+                }
+                $("." + id).click()
+            }
+
+            $(document).ready(function () {
+                $('#b12').click(function (e) {
+                    $('#_loader').show()
+
+                    const id = document.getElementById('my_question').className
+                    const ans = document.getElementById('userans').innerText
+
+                    $("label").addClass('disabled')
+
+                    $(".rb").show();
+                    $(".rb").attr("disabled", true);
+                    var url;
+                    if (window.location.hostname === '127.0.0.1') {
+                        var url = 'http://127.0.0.1:8000';
+                    }
+                    else {
+                        var url = window.location.protocol + '//' + window.location.hostname;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: `${url}/checkAns/${id}/${ans}/post/`,
+                        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        dataType: "json",
+                        success: function (response) {
+                            ansResult(response)
+                            $('#_loader').hide()
+                        },
+                        error: function (rs, e) {
+                            if (rs.status === 404) {
+                                $('#_loader').hide()
+                                alert("Please, Select Appropriate Option")
+                            }
+                            else {
+                                alert("sorry, Something went wrong..try again!!!")
+                            }
+                        }
+                    })
+                    function ansResult(response) {
+                        $("#" + response.q_id).addClass('btn-info')
+                        if (response.final_submit) {
+                            $(".all_done").show()
+                            $(".next_btn").hide()
+                        }
+                        else {
+                            $(".next_btn").show()
+                        }
+                    }
+                    $("#b12").hide()
+                });
+            });
+
+        </script>
+
+        <script>
+            document.onkeydown = function (e) {
+                if (event.keyCode == 123) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
+                }
+            }
+
+        window.onbeforeunload = confirmExit;
+        function confirmExit() {
+            return "You have attempted to leave this page. Are you sure?";
+        }
+        </script>
+
+
+        <script>
+
+            $(document).ready(function (e) {
+                $('.start_now').click(function (e) {
+                    $("#show_timer").show()
+                    start_timer()
+                    $("#_rules").hide()
+                    $("#_loader").show()
+                    $(".show_done").show()
+                    $("#b12").addClass('disabled')
+                    $("label").removeClass('disabled')
+                    $("#all_msg_alrt").hide()
+                    let Id = "{{ first_id }}"
+                    $(`#${Id}`).addClass('disabled btn-primary')
+                    $('.next_btn').attr('id', 2);
+
+                    var url;
+                    if (window.location.hostname === '127.0.0.1') {
+                        var url = 'http://127.0.0.1:8000';
+                    }
+                    else {
+                        var url = window.location.protocol + '//' + window.location.hostname;
+                    }
+                    $('#question__see').show();
+                    $('#page_indicator').show();
+                    $.ajax({
+                        type: "POST",
+                        url: `${url}/fetch_post_questions/${Id}/`,
+                        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        dataType: "json",
+                        success: function (response) {
+                            document.getElementById("my_question").innerHTML = " " + response.question
+                            document.getElementById("qid").innerHTML = 1
+                            document.getElementById("see_category").innerHTML = "<b>Category</b> : " + response.category
+                            if (response.attempt) {
+                                $("#attemped").show()
+                                $("label").hide()
+                                $("#b12").hide()
+                                $("#" + Id).addClass('disabled btn-warning')
+                                if (response.final_submit) {
+                                    $(".all_done").show()
+                                }
+                                else {
+                                    $(".next_btn").show()
+                                }
+                            }
+                            else {
+                                document.getElementById("my_question").className = Id
+                                document.getElementById("op1").innerHTML = response.op1
+                                document.getElementById("op2").innerHTML = response.op2
+                                $('._op1_').val(response.op1);
+                                $('._op2_').val(response.op2);
+                                if (response.op3 !== false) {
+                                    document.getElementById("op3").innerHTML = response.op3
+                                    $('._op3_').val(response.op3);
+                                }
+                                else {
+                                    $("#_op3").toggleClass("__op3");
+                                }
+                                if (response.op4 !== false) {
+                                    document.getElementById("op4").innerHTML = response.op4
+                                    $('._op4_').val(response.op4);
+                                }
+                                else {
+                                    $("#_op4").toggleClass("__op4");
+                                }
+                                if (response.final_submit) {
+                                    $(".all_done").show()
+                                }
+                                else {
+                                    $(".next_btn").show()
+                                }
+                            }
+                            $('#_loader').hide()
+                        },
+                        error: function (e) {
+                            $('#_loader').hide()
+                            alert("sorry, Something went wrong..try again!!!")
+                        }
+                    })
+                }
+                )
+            }
+            );
+
+            $(document).ready(function (e) {
+                $('.page_select').click(function (e) {
+                    $("#_loader").show()
+                    $("label").removeClass('disabled')
+                    $("#b12").addClass('disabled')
+                    $(".page_select").removeClass('disabled btn-primary')
+                    $("#" + e.target.id).addClass('disabled btn-primary')
+                    $('label').removeClass("btn-warning")
+                    $(".next_btn").hide()
+                    var p_id = e.target.id
+                    $('.next_btn').attr('id', parseInt(e.target.innerText) + 1);
+                    var url;
+                    if (window.location.hostname === '127.0.0.1') {
+                        var url = 'http://127.0.0.1:8000';
+                    }
+                    else {
+                        var url = window.location.protocol + '//' + window.location.hostname;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: `${url}/fetch_post_questions/${p_id}/`,
+                        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        dataType: "json",
+                        success: function (response) {
+                            document.getElementById("my_question").innerHTML = " " + response.question
+                            document.getElementById("qid").innerHTML = e.target.innerText
+                            document.getElementById("see_category").innerHTML = "<b>Category</b> : " + response.category
+                            if (response.attempt) {
+                                $("#attemped").show()
+                                $("label").hide()
+                                $("#b12").hide()
+                                $("#" + p_id).addClass('btn-warning')
+                                if (response.final_submit) {
+                                    $(".all_done").show()
+                                }
+                                else {
+                                    $(".next_btn").show()
+                                }
+                            }
+                            else {
+                                $("#attemped").hide()
+                                $("label").show()
+                                $("#b12").show()
+                                document.getElementById("my_question").className = p_id
+                                document.getElementById("op1").innerHTML = response.op1
+                                document.getElementById("op2").innerHTML = response.op2
+                                $('._op1_').val(response.op1);
+                                $('._op2_').val(response.op2);
+                                if (response.op3 !== false) {
+                                    document.getElementById("op3").innerHTML = response.op3
+                                    $('._op3_').val(response.op3);
+                                }
+                                else {
+                                    $("#_op3").hide();
+                                }
+                                if (response.op4 !== false) {
+                                    document.getElementById("op4").innerHTML = response.op4
+                                    $('._op4_').val(response.op4);
+                                }
+                                else {
+                                    $("#_op4").hide();
+                                }
+                                if (response.final_submit) {
+                                    $(".all_done").show()
+                                }
+                                else {
+                                    $(".next_btn").show()
+                                }
+                            }
+                            $('#_loader').hide()
+                        },
+                        error: function (e) {
+                            $('#_loader').hide()
+                            alert("sorry, Something went wrong..try again!!!")
+                        }
+                    })
+                }
+                )
+            }
+            );
+
+        </script>
+
+</body>
+
+</html>

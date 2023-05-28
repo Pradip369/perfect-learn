@@ -1,0 +1,167 @@
+{% extends './base.html' %}
+
+{% block title %}All Done{% endblock title %}
+
+{% block content %}
+<div class="container-fluid mb-5">
+    <div class="success__box">
+            {% if test_pass %}
+                <h3 class="text-center pt-3 alert-success">🏆🏆🏆 Congratulations <strong>{{user_name}}</strong>, You succefully pass out this quiz 🏆🏆🏆</h3>
+            {% else %}
+                {% if re_type == 'post' %}
+                    <p class="alert alert-info"><b>◾ Dear Student, Kindly enhance your knowledge by reading PDF or PPT or watch full video..</b></p>
+                {% else %}
+                    <p class="alert alert-info"><b>◾ Dear Student, Kindly enhance your knowledge by reading PDF or PPT or watch full video and then give the post quiz.</b></p>
+                {% endif %}
+            {% endif %}
+            <br/>
+
+            {% if messages %}
+            {% for message in messages%}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if not request.user.post_complete and not re_type == 'post' %}
+                <a class="btn btn-warning px-4 font-weight-bold" href="#" onclick="window.open('/start_quiz/post/','newwindow','width=' + screen.availWidth+',height=' + screen.availHeight,toolbar='no'); return false;">Start Post Quiz</a>
+            {% endif %}
+
+            {% if re_type == 'post' %}
+                <a href="{% url 'show_my_graph' %}" class="mt-2 btn btn-warning px-4 ml-2 font-weight-bold">Show My Quiz Graph</a>
+                <a href="{% url 'show_all_quetion' %}" class="mt-2 btn btn-success px-4 ml-2 font-weight-bold">View Solution</a>
+
+                {% include './feedback.html' with u_name=request.user.username tc=total_score ot=out_of %}
+                <button id="auto_feed" type="button" class="btn btn-dark px-4 mt-2 ml-2 font-weight-bold" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">FeedBack</button>
+            {% endif %}
+
+            <h1 style="font-family: cursive;" class="text-center pt-5">My Score : <b
+                    class="text-success">{{total_score}} out of {{out_of}}</b></h1><hr/>
+
+<div>
+    <p>Sign : ✅ Seen ❌ Unseen </p>
+        <div id = "scr_table" style="display: block; overflow-y: auto; white-space: nowrap;">
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Learnig Source</th>
+                        <th scope="col">True Ans.</th>
+                        <th scope="col">Wrong Ans.</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Last Submitted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in all_sub_ans %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{data.category.category_name}}</td>
+                        {% if data.total_score < 8 %}
+                            <td>
+                                {% for src in data.category.cat_video.all %}
+                                    {% if src.file_type == 'VIDEO' %}
+                                        <a id = "{{src.id}}" class = "source btn btn-sm p-0 btn-warning" href="{% url 'show_video' data.category.category_name %}"><span class="{{src.id}}">❌</span> Video</a><br/>
+                                    {% elif src.file_type == 'PDF' %}
+                                        <a id = "{{src.id}}" download class="source btn btn-sm p-0 btn-success" href="{{src.source_file.url}}"><span class="{{src.id}}">❌</span> Read PDF</a><br />
+                                    {% elif src.file_type == 'PPT' %}
+                                        <a id = "{{src.id}}" download class="source btn btn-sm p-0 btn-info" href="{{src.source_file.url}}"><span class="{{src.id}}">❌</span> Read PPT</a><br />
+                                    {% else %}
+                                        ---
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        {% else %}
+                        <td>--</td>
+                        {% endif %}
+                        <td>{{data.tru_ans}}</td>
+                        <td>{{data.wrong_ans}}</td>
+                        <td>{{data.total_score}}</td>
+                        <td>{{data.cr_date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% block javascript %}
+
+<script>
+    $(document).ready(function () {
+
+        $('.source').click(function (e) {
+        $.ajax({
+            type: "POST",
+            url: `/ppt_pdf_video_seen/${e.target.id}/push/`,
+            dataType: "json",
+            success: function (response) {
+                $(`.${response.id}`).text('✅');
+            },
+            error: function (e) {
+                alert("sorry, Something went wrong..try again!!!")
+            }
+        });
+        });
+
+        $.ajax({
+            type: "POST",
+            url: `/ppt_pdf_video_seen/0/pull/`,
+            data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+            dataType: "json",
+            success: function (response) {
+                if(response.ids){
+                    var _ids = response.ids
+                    for (let i = 0; i < _ids.length; i++) {
+                        $(`.${_ids[i]}`).text('✅');                    
+                    }
+                }
+            },
+            error: function (e) {
+                alert("sorry, Something went wrong..try again!!!")
+            }
+        });
+        var is_submited = '{{request.session.feed_back}}'
+        if(!is_submited){
+            $(document).ready(function () {
+                setTimeout(function () {
+                    $('#auto_feed').click();
+                }, 1200);
+            });
+        }
+        else{
+            $("#auto_feed").hide()
+        }
+
+        $('#feed_form').on("submit",function (e) {
+            e.preventDefault()
+            const msg = $("#message-text").val();
+            $.ajax({
+            type: "POST",
+            url: `/feed_back_form/`,
+            data: {'csrfmiddlewaretoken': '{{ csrf_token }}',"msg" : msg},
+            dataType: "json",
+            success: function (response) {
+                location.reload();
+            },
+        });
+})
+});
+</script>
+
+{% endblock %}
+{% endblock %}
+
+{% block quota %}
+    {% if re_type == 'post' %}
+        ❝ EDUCATION IS THE KEY TO UNLOCK THE GOLDEN DOOR OF FREEDOM ❞
+    {% else %}
+        ❝ THE EXPERT IN ANYTHING WAS ONCE A BEGINNER ❞
+    {% endif %}
+{% endblock %}

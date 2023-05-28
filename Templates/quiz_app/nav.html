@@ -1,0 +1,35 @@
+<header class="top-header">
+    {% load static %}
+    <nav class="navbar header-nav navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="{% static 'quiz_app/images/base/logo.png' %}" alt="image"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-wd"
+                aria-controls="navbar-wd" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbar-wd">
+                <ul class="navbar-nav">
+                    <li><a class="nav-link active" href="/">Home</a></li>
+                    <li><a class="nav-link" href="/about">About</a></li>
+                    {% if not user.is_authenticated or user.is_superuser or user.is_staff %}
+                        <li><a class="nav-link" href="/admin">Admin Panel</a></li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <li><a class="nav-link" href="/user/user_profile">My Profile</a></li>
+                    {% else %}
+                        <li><a class="nav-link" href="/user/user_profile">Student Panel</a></li>
+                    {% endif %}
+                    <li><a class="nav-link" href="{% url 'show_my_graph' %}">Graphs</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li><a class="nav-link" href="{% url 'logout_user' %}">Logout</a></li>
+                        {% else %}
+                        <li><a class="nav-link" href="{% url 'user_login' %}">Login</a></li>
+                        <li><a class="nav-link" href="{% url 'user_registration' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

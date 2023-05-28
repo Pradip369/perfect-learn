@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+
+{% block extrastyle %}
+{{ block.super }}
+
+{% for css in dashboard.media.css %}
+<link href="{% static css %}" rel="stylesheet" />
+{% endfor %}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+
+{% for js in dashboard.media.js %}
+<script src="{% static js %}"></script>
+{% endfor %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard jet{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="breadcrumbs">All Students Marks</div>
+{% endif %}
+<div>
+    <center>
+        <h2>All Students Marks</h2>
+    </center>
+    <hr />
+    <div class="container">
+        <table class="table table-hover table-dark table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Pre Quiz Mark</th>
+                    <th scope="col">Post Quiz Mark</th>
+                    <th scope="col">View Full Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for au in all_us %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{au.user_name}}</td>
+                    <td>{{au.pre_marks}}</td>
+                    <td>{{au.post_marks}}</td>
+                    <td><a href="/admin/quiz_app/customuser/{{au.user_id}}/change/">View Full Detail</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <br />
+    <br />
+</div>
+
+{{ dashboard.render_tools }}
+{% endblock %}
+
+{% block content %}
+{{ dashboard.render }}
+{% endblock %}

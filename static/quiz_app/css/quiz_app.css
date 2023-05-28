@@ -1,0 +1,31 @@
+* {
+  margin: 0%;
+  padding: 0%;
+}
+.errorlist {
+  display: none;
+}
+
+.base__margin {
+  margin-top: 75px;
+}
+.welcome__text {
+  font-size: 40px !important;
+}
+@media only screen and (max-width: 600px) {
+  .base__margin {
+    margin-top: 1px !important;
+  }
+  .welcome__text {
+    font-size: 32px !important;
+  }
+  .contact__image {
+    display: none;
+  }
+}
+.home__page {
+  background-image: linear-gradient(#12385b, #567897, #768ca0);
+}
+.video__bg {
+  background-image: linear-gradient(#12385b, #1a4b79);
+}

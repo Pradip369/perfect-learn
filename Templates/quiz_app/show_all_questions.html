@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+
+{% block title %}Show all Questions{% endblock %}
+
+{% block content %}
+
+<h3 class="alert alert-info border-dark text-center text-dark"><b>Solution</b></h3>
+
+<p class="align-left ml-2">
+🟩 Your attempt is right<br/>
+🟥 Your attempt is wrong
+</p>
+<hr/>
+<div class="container-fluid">
+    {% for qu in all_questions %}        
+        <div class="card text-dark mb-3 {% if qu.id in currect_qu %} border-success {% else %} border-danger {% endif %}">
+            <div class="card-header {% if qu.id in currect_qu %} bg-success {% else %} bg-danger {% endif %} text-light">
+                <span class="badge badge-warning badge-pill p-2 my-2">{{forloop.counter}}. {{qu.category.category_name}} </span> {{qu}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title {% if qu.answer == 'option1' %} font-weight-bold alert alert-success pl-1 py-2 h6 {% endif %}">A) {{qu.option1}}</h5>
+                <h5 class="card-title {% if qu.answer == 'option2' %} font-weight-bold alert alert-success pl-1 py-2 h6 {% endif %}">B) {{qu.option2}}</h5>
+                {% if qu.option3 %}
+                    <h5 class="card-title {% if qu.answer == 'option3' %} font-weight-bold alert alert-success pl-1 py-2 h6 {% endif %}">C) {{qu.option3}}</h5>
+                {% endif %}
+                {% if qu.option3 %}
+                    <h5 class="card-title {% if qu.answer == 'option4' %} font-weight-bold alert alert-success pl-1 py-2 h6  {% endif %}">D) {{qu.option4}}</h5>
+                {% endif %}
+                {% if qu.solution %}
+                <hr/>
+                <p>
+                    <b class="text-success">Solution : </b><br/>{{qu.solution}}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    <center><a href="{% url 'all_done' 'post' %}" class="btn btn-dark px-4 ml-2 my-3 font-weight-bold">Back</a></center>
+    <center><a href="{% url 'show_my_graph' %}" class="btn btn-warning px-4 ml-2 my-3 font-weight-bold">Show My Quiz Graph</a></center>
+</div>
+
+{% endblock %}

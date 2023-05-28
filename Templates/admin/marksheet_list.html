@@ -1,0 +1,31 @@
+{% extends "admin/change_list.html" %} {% load i18n %}
+{% block object-tools-items %}
+{{ block.super }}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<div id="loader" style="display: none;">
+    <img src="{% static 'quiz_app/images/base/loader.gif' %}" width="500px" height="500px" />
+</div>
+
+<a onclick="start_load()" class="btn btn-sm mx-1" href="{% url 'generate_marksheet' 'pre' %}">🖨 Generate Pre Quiz Mark Sheet</a>
+<a onclick="start_load()" class="btn btn-sm mx-1" href="{% url 'generate_marksheet' 'post' %}">🖨 Generate Post Quiz Mark Sheet</a>
+
+<script>
+    const start_load = () => {
+        var ld = document.getElementById("loader");
+        ld.style.display = ""
+    };
+</script>
+
+{% endblock %}

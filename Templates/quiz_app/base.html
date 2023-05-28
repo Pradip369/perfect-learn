@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="quiz java communication skiil_quiz apptitude_quiz python learn education college_quiz test online _test">
+    <meta name="description" content="quiz java communication skiil_quiz apptitude_quiz python learn education college_quiz test online _test">
+    <meta name="author" content="quiz java communication skiil_quiz apptitude_quiz python learn education college_quiz test online _test">
+    
+    <title>{% block title %}Home Page{% endblock %}</title>
+
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'quiz_app/images/base/logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'quiz_app/images/base/logo.png' %}" />
+
+    <meta name="theme-color" content="#567897">
+    <meta name="msapplication-navbutton-color" content="#567897">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#567897">
+    
+    <link rel="stylesheet" href="{% static 'quiz_app/css/quiz_app.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href = "{% static 'quiz_app/css/base/style.css' %}" />
+    <link rel="stylesheet" href = "{% static 'quiz_app/css/base/responsive.css' %}" />
+
+    {% block link %}{% endblock %}
+</head>
+<body>
+    {% include './nav.html' %}
+
+    <div id="preloader">
+        <div class="loader">
+            <img src="{% static 'quiz_app/images/base/loader.gif' %}" alt="#" />
+        </div>
+    </div>
+
+    <div class="base__margin">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    
+    <div class="footer_bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p class="text-light font-weight-bold text-center">{% block quota %}❝ EDUCATION IS THE MOST POWERFUL WEAPON WHICH YOU CAN USE TO CHANGE THE WORLD ❞{% endblock %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'quiz_app/js/base/jquery.magnific-popup.min.js' %}"></script>
+<script src = "{% static 'quiz_app/js/base/jquery.pogo-slider.min.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/slider-index.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/form-validator.min.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/contact-form-script.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/isotope.min.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/images-loded.min.js' %}"></script>
+<script src="{% static 'quiz_app/js/base/custom.js' %}"></script>
+
+{% block javascript %}
+{% endblock %}
+
+</body>
+</html>

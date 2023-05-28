@@ -1,0 +1,200 @@
+{% extends './base.html' %}
+
+{% block title %}Home Pege{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+<body id="home" data-spy="scroll" data-target="#navbar-wd" data-offset="98">
+
+<div class="home__page">
+    <div class="section">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 layout_padding_2">
+                    <div class="full">
+                        <div class="heading_main text_align_left">
+                            <h2><span class="text-warning">Welcome To</span><span class="text-light"> World of Education</span></h2>
+                        </div>
+                        <div class="full">
+                            <p class="text-light"><span style="font-size: 50px; font-family: cursive;">A</span>cquiring knowledge & enhancing skills are the basic discipline of Learning methodology . Due to this pandemic situation
+                            teaching and learning has been drifted from offline to online. It is important to keep you all motivated and inculcate
+                            the practice of self learning.This web platform provides you to explore an opportunities to validate your knowledge over
+                            your understanding of subjects (especially designed for MCA aspirants) . The terminology "CUP " (Check - Understand -
+                            Perform ) through various specialized knowledge enhancer tools helps you to Check your subject knowledge / Understanding
+                            upon core and complex concepts through various tools and finally Perform the quiz to validate  your knowledge</p>
+                        </div>
+                        <div class="full">
+                            <a class="hvr-radial-out button" href="/about">About more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 pt-5">
+                    <div class="full">
+                        <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="2400">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img1.jpg' %}"
+                                        alt="First slide">
+                                </div>
+                                <div class="carousel-item ">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img2.jpg' %}"
+                                        alt="First slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img3.jpg' %}"
+                                        alt="Second slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img4.jpg' %}"
+                                        alt="Fourth slide">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section contact_section">
+        <div class="container">
+            <div class="row">
+                <div class="layout_padding col-lg-6 col-md-6 col-sm-12">
+                    <div class="full float-right_img">
+                        {% if request.user.is_authenticated %}
+                            <h1 class="font-italic welcome__text" style="color: rgb(164, 225, 230); font-size: 42px;">Welcome <b>{{request.user.username | capfirst}}</b></h1>
+                        {% else %}
+                            <h1 class="font-italic welcome__text" style="color: rgb(164, 225, 230); font-size: 42px;">Welcome <b>Guest</b></h1>
+                        {% endif %}
+                        <br/>
+                        <div class="full field">
+                            {% if request.user.is_authenticated %}
+                                {% if request.user.post_complete %}
+                                    <a href="{% url 'show_my_graph' %}" class="btn btn-warning px-4 font-weight-bold my-2">Show My Quiz Graph</a>
+                                {% elif request.user.pre_complete %}
+                                    <a class="btn btn-warning px-4 font-weight-bold" href="#" onclick="window.open('/start_quiz/post/','newwindow','width=' + screen.availWidth+',height=' + screen.availHeight,toolbar='no'); return false;">Start Post Quiz</a>
+                                {% else %}
+                                    <a href="#" class="btn btn-warning px-4 font-weight-bold" onclick="window.open('/start_quiz/pre/','newwindow','width=' + screen.availWidth+',height=' + screen.availHeight,toolbar='no'); return false;">Start Quiz Now</a>
+                                {% endif %}
+                                    <a href="{% url 'user_profile' %}" class="btn btn-success px-3 font-weight-bold">Go To My Profile</a>
+                            {% else %}
+                                <a href="{% url 'user_registration' %}" class="btn btn-warning px-4 mr-3 font-weight-bold">Register Now</a> <span class="text-light">OR</span> 
+                                <a href="{% url 'user_login' %}" class="btn btn-success px-4 ml-3 font-weight-bold">Login</a>
+                            {% endif %}
+                            <br/>
+                            <br/>
+                            <br/>
+                            <p class="text-light"><span style="font-size: 50px; font-family: cursive;">L</span>et's begin with enhancer of your skills . Participate in the quiz & challenge yourself , if you thing you need more
+                            understanding of subject , go through study material (knowledge enhancement tools) and then again participate in the
+                            quiz , lets see the "CUP" statistics of your appearance on quiz exam .Happy Learning !!!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="layout_padding col-lg-6 col-md-6 col-sm-12 contact__image">
+                    <div class="full float-right_img">                        
+                        <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="2200">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img4.jpg' %}" alt="First slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img3.jpg' %}" alt="Second slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="300px" src="{% static 'quiz_app/images/img2.jpg' %}" alt="Third slide">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section contact_section">
+        <div class="container">
+            <div class="row">
+                <hr/>
+                <div class="col-lg-6 col-md-6 col-sm-12 pt-5">
+                        <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="2500">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100" height="325px" src="{% static 'quiz_app/images/img6.jpg' %}" alt="First slide">
+                                </div>
+                                <div class="carousel-item ">
+                                    <img class="d-block w-100" height="325px" src="{% static 'quiz_app/images/img7.jpg' %}" alt="First slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="325px" src="{% static 'quiz_app/images/img5.jpg' %}" alt="Second slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" height="325px" src="{% static 'quiz_app/images/img8.jpg' %}" alt="Fourth slide">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
+                    <div class="contact_form">
+                        <form id = "query_form">
+                            <h3 class="text-center font-weight-bold text-warning mt-3 query_text">Send Us Your Query</h3><hr/>
+                            <fieldset>
+                                <div class="full field">
+                                    <input id = "name_val" placeholder="Enter Your Name" required />
+                                </div>
+                                <div class="full field">
+                                    <input id = "src_val" placeholder="Email Id Or Phone number" required />
+                                </div>
+                                <div class="full field">
+                                    <textarea id = "que_text" placeholder="Describe Your Query..." required></textarea>
+                                </div>
+                                <div class="full field">
+                                    <div class="center"><button>Send</button></div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <a href="#" id="scroll-to-top" class="hvr-radial-out"><i class="fa fa-angle-up"></i></a>
+
+{% block javascript %}
+
+<script>
+    $('#query_form').on("submit", function (e) {
+            e.preventDefault()
+            const name_val = $("#name_val").val();
+            const src_val = $("#src_val").val();
+            const que_text = $("#que_text").val();
+            $.ajax({
+                type: "POST",
+                url: `/user_query/`,
+                data: { 'csrfmiddlewaretoken': '{{ csrf_token }}', "query_text": que_text,"contact_sr" : src_val,"name_val" : name_val},
+                dataType: "json",
+                success: function (response) {
+                    window.location.href = "/";
+                },
+                error: function (e) {
+                    alert("Something Went Wrong!!!")
+                }
+            });
+        });
+</script>
+
+{% endblock %}
+
+{% endblock %}

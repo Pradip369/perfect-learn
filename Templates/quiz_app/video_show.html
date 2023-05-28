@@ -1,0 +1,94 @@
+{% extends './base.html' %}
+
+{% block title %}Video{% endblock title %}
+
+{% block content %}
+
+<div class="video__bg">
+<div class="mx-3">
+    <div class="row">
+        <div class="col-sm-6 pt-4">
+            {% for fc in files %}
+                {% if fc.file_type == 'VIDEO' %}
+                    <video class="img-fluid" width="520" height="340" poster="{{fc.category.category_img.url}}" controls>
+                        <source src="{{fc.source_file.url}}">
+                    </video>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-sm-6">
+            <div class="mx-1">
+                <h4 class="text-light">Category Name : <b class="text-warning">{{cat.category_name}}</b></h4>
+                <hr/>
+            {% for fc in files %}
+                {% if fc.file_type == 'PPT' %}
+                    <a id = '{{fc.id}}' download class="source btn btn-info my-2" href="{{fc.source_file.url}}"><span class="{{fc.id}}">❌</span> Read PPT</a>
+                {% elif fc.file_type == 'PDF' %}
+                    <a id = '{{fc.id}}' download class="source btn btn-primary my-2" href="{{fc.source_file.url}}"><span class="{{fc.id}}">❌</span> Read PDF</a>
+                {% endif %}
+            {% endfor %}
+            <br/>
+            {% if not request.user.post_complete %}
+                <a class="btn btn-success" href="#" onclick="window.open('/start_quiz/post/','newwindow','width=' + screen.availWidth+',height=' + screen.availHeight,toolbar='no'); return false;">Start Post Quiz</a>
+            {% endif %}
+            <hr/>
+            <p><b class="text-light">Detail : </b><span class="text-warning">{{cat.category_description}}</span></p>
+            </div>
+        </div>
+        {% if request.user.post_complete %}
+            <a class="btn btn-sm btn-dark ml-3 mt-4" href="{% url 'all_done' 'post' %}">⬅ Back</a>
+        {% else %}
+            <a class="btn btn-sm btn-dark ml-3 mt-4" href="{% url 'all_done' 'pre' %}">⬅ Back</a>
+        {% endif %}
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+</div>
+</div>
+
+{% block javascript %}
+
+<script>
+        $(document).ready(function () {
+
+            $('.source').click(function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: `/ppt_pdf_video_seen/${e.target.id}/push/`,
+                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                    dataType: "json",
+                    success: function (response) {
+                        $(`.${response.id}`).text('✅');
+                    },
+                    error: function (e) {
+                        alert("sorry, Something went wrong..try again!!!")
+                    }
+                });
+            });
+
+            $.ajax({
+                type: "POST",
+                url: `/ppt_pdf_video_seen/0/pull/`,
+                data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                dataType: "json",
+                success: function (response) {
+                    if (response.ids) {
+                        var _ids = response.ids
+                        for (let i = 0; i < _ids.length; i++) {
+                            $(`.${_ids[i]}`).text('✅');
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("sorry, Something went wrong..try again!!!")
+                }
+            });
+
+        });
+</script>
+
+{% endblock %}
+
+{% endblock %}

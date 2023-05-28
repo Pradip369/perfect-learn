@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student MArks</title>
+
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+<body>
+    <h3>Hello <strong>{{username}}, your {{re_type}} quiz marks here</strong></h3>
+    <hr/>
+    <div>    
+        <table style="width:100%; background-color: rgb(235, 232, 232);">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Category</th>
+                    <th>True Ans.</th>
+                    <th>Wrong Ans.</th>
+                    <th>Score</th>
+                    <th>Last Submitted</th>
+                </tr>
+            </thead>
+            {% for data in all_sub_ans %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><b>{{data.category.category_name}}</b></td>
+                    <td>{{data.tru_ans}}</td>
+                    <td>{{data.wrong_ans}}</td>
+                    <td>{{data.total_score}}</td>
+                    <td>{{data.cr_date}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+<br/>
+<h6>Have a great day <b>{{username}}</b></h6>
+<small>Team <b>Ingenuity Towards Skill Enhancement</b></small>
+
+</body>
+</html>

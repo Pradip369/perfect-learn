@@ -1,0 +1,29 @@
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title p-2" id="exampleModalLabel">
+                    ◾ Dear <b>{{u_name | capfirst}}</b> , Your Score In Post Test is <span class="font-weight-bold text-success">{{tc}} out of {{ot}}</span>. <br/>
+                    ◾ To get complete scorecard in your email, kindly fill your experience about this test for further enhancement in process.
+                </h5>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id = "feed_form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">User Name:</label>
+                        <input type="text" disabled class="form-control" id="recipient-name" value="{{request.user.username}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Feedback Text:</label>
+                        <textarea class="form-control" id="message-text" placeholder="Please Write Your FeedBack...." required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

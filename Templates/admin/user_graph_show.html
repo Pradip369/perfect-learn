@@ -1,0 +1,93 @@
+<div>
+    <div>
+        <div class="row" style="background-color: rgb(226, 226, 241);">
+            <div class="col-md-6"><canvas id="pre_test" style="width:100%;max-width:600px"></canvas>
+                <hr />
+            </div>
+            <div class="col-md-6"><canvas id="post_test" style="width:100%;max-width:600px"></canvas><br /></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var userName = '{{username}}'
+        $.ajax({
+            type: "POST",
+            url: `/render_graph/${userName}/`,
+            data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+            dataType: "json",
+            success: function (response) {
+                if (response.pre_data) {
+                    remain_value = 100 - response.pre_data.per_mark
+                    var xValues = ["Pre Quiz", "Cutting Marks"];
+                    var yValues = [response.pre_data.per_mark, remain_value];
+                    var barColors = [
+                        "#00aba9",
+                        "#ffffff"
+                    ];
+                    new Chart("pre_test", {
+                        type: "pie",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                backgroundColor: barColors,
+                                data: yValues,
+                                borderColor: '#000000'
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: "Pre Quiz Marks"
+                            }
+                        }
+                    });
+                }
+                if (response.post_data) {
+                    var inc_dec = response.diff_val
+                    var l_val;
+                    var clr_val
+                    if (inc_dec > 0) {
+                        l_val = "Increment Pre to Post"
+                        clr_val = "#1e7145"
+                    }
+                    else {
+                        l_val = "Decrement Pre to Post"
+                        clr_val = "#b91d47"
+                    }
+                    var xValues = ["Post Quiz", "Pre Quiz", l_val];
+                    var yValues = [response.post_data.per_mark, response.pre_data.per_mark, inc_dec];
+                    var barColors = [
+                        "#ffc312",
+                        "#00aba9",
+                        clr_val
+                    ];
+                    new Chart("post_test", {
+                        type: "pie",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                backgroundColor: barColors,
+                                data: yValues,
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: "Post and Pre Quiz Marks"
+                            },
+                        }
+                    });
+                }
+            },
+            error: function (e) {
+                alert("sorry, Something went wrong..try again!!!")
+            }
+        });
+    });
+</script>

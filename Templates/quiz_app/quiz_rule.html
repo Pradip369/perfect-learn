@@ -1,0 +1,22 @@
+<div class="jumbotron" style="border: 2px solid black; border-radius: 15px; margin: 15px;" id="_rules">
+    <h2 class="display-5 text-center"><b>QUIZ RULES</b></h2>
+    <hr/>
+        <b class="text-danger" style="margin-left: 20px;"> ⭕ Guidelines ,Rules and instructions for appearing the test. Please read very carefully before you appear in the test : </b>
+        <br/>
+        <br/>
+        <ol>◾ Dear candidate, please adhere to the timing of your appearance on the exam. The exam is only for 30 mins to validate your knowledge through pre and post-test evaluation.</ol>
+        <ol>◾ The study material is available to enhance your skills in case of lower mark optioned in per test.</ol>
+        <ol>◾ If your score less than 80% of score in your pre test, then you must go through knowledgeable study material such as PPT, Videos , PDF to enhance your skill in more structural mode.</ol>
+        <ol>◾ You can get your score card immediately after completion of your test in both conditions.</ol>
+        <ol>◾ To get a result or complete scorecard by email , please fill the feedback form after post test.</ol>
+        <ol>◾ In case of any doubt you can email me from the website main page link</ol>
+    <hr class="my-2">
+    <p class="text-center">This quiz on 
+        {% for cat in categorys %}| <b>{{cat | capfirst}}</b>
+        {% endfor %}
+    </p>
+    <p class="lead my-3 text-center">
+        <a style="margin-bottom: 15px;" class="start_now btn btn-primary px-5">I accept all this rules and Start {{type}} Quiz Now</a> 
+        <a class="btn btn-danger" style="margin-bottom: 15px; padding: 10 30px 10 30px;" onclick="window.close();">Exit</a>
+    </p>
+</div>
